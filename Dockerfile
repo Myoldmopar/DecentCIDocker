@@ -31,6 +31,9 @@ RUN apt install -y ruby
 # Python dependencies - installed into system Python 3
 RUN pip3 install boto beautifulsoup4 soupsieve bs4
 
+# But here's the deal, some scripts, like send_to_s3, just execute /usr/bin/env python, which will find Python 2 on Ubuntu 18.04, so install at least boto there
+RUN pip install boto
+
 # Then Ruby dependencies
 RUN gem install activesupport octokit
 
