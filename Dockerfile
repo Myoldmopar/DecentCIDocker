@@ -66,15 +66,3 @@ RUN chmod +x /ci_root/ci_script/runner.sh
 
 # Kick it off with bash, then just run ./runner.sh in the running container
 ENTRYPOINT ["/bin/bash"]
-
-# To build this docker image:
-# sudo docker build . -t myoldmopar/decent_ci_ubuntu_1804
-
-# If build issues occur where APT cannot find packages, you probably need a full rebuild
-# sudo docker build . -t myoldmopar/decent_ci_ubuntu_1804 --no-cache
-
-# To run this docker image:
-# sudo docker run -e LANG=C.UTF-8 -it myoldmopar/decent_ci_ubuntu_1804
-
-# Then just run the decent ci command line in the docker and let it go
-# xvfb-run ruby run_ci.rb /ci_root/ci {AMAZON_ARGUMENTS} false {GITHUB_TOKEN} NREL/EnergyPlus
