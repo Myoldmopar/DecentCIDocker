@@ -11,7 +11,14 @@ RUN apt install -y tzdata
 RUN apt install -y git curl 
 
 # Common build pieces
-RUN apt install -y cmake g++ gfortran cmake-curses-gui ccache
+RUN apt install -y g++ gfortran cmake-curses-gui ccache
+
+# Have to install cmake from kitware to get a more recent version
+RUN apt install -y gpg wget
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ bionic main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
+RUN apt update
+RUN apt install -y cmake
 
 # Python requirements - all Python 3
 RUN apt install -y python3-pip python3-dev
@@ -53,11 +60,18 @@ RUN git clone https://gist.github.com/c51580a92556ef344216c22ec390aa31.git ci_sc
 # Change to the run script directory
 WORKDIR /ci_root/ci_script
 
-# Kick it off with bash
-ENTRYPOINT /bin/bash
+# Copy in the worker script
+COPY ./runner.sh /ci_root/ci_script
+RUN chmod +x /ci_root/ci_script/runner.sh
+
+# Kick it off with bash, then just run ./runner.sh in the running container
+ENTRYPOINT ["/bin/bash"]
 
 # To build this docker image:
 # sudo docker build . -t myoldmopar/decent_ci_ubuntu_1804
+
+# If build issues occur where APT cannot find packages, you probably need a full rebuild
+# sudo docker build . -t myoldmopar/decent_ci_ubuntu_1804 --no-cache
 
 # To run this docker image:
 # sudo docker run -e LANG=C.UTF-8 -it myoldmopar/decent_ci_ubuntu_1804

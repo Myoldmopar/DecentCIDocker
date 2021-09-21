@@ -1,0 +1,2 @@
+#!/bin/bash
+xvfb-run ruby run_ci.rb /path/to/run/ci --aws-access-key-id={SOMETHING} --aws-secret-access-key={SOMETHING} false {GITHUB_TOKEN} NREL/EnergyPlus
